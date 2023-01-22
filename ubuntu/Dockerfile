@@ -19,6 +19,7 @@ RUN apt-get update && apt-get install -y \
     net-tools \
     openssh-server \
     pkg-config \
+    python3 \
     rng-tools \
     sudo \
     systemd \
@@ -27,6 +28,11 @@ RUN apt-get update && apt-get install -y \
     wget && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
+
+# Install nvm and node
+RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
+
+RUN nvm install v16.17.1
 
 # Create the following files, but unset them
 RUN echo "" > /etc/machine-id && echo "" > /var/lib/dbus/machine-id
@@ -38,3 +44,7 @@ RUN sed -i -e 's/^AcceptEnv LANG LC_\*$/#AcceptEnv LANG LC_*/' /etc/ssh/sshd_con
 
 # Set the root password to root when logging in through the VM's ttyS0 console
 RUN echo "root:root" | chpasswd
+
+RUN npm install --global code-server --unsafe-perm
+
+RUN code-server
